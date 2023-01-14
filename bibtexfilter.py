@@ -1,4 +1,7 @@
 import re
+import json
+import locale
+from pathlib import Path
 
 import bibtexparser
 from bibtexparser.bibdatabase import BibDatabase
@@ -10,7 +13,13 @@ from textual.containers import Container
 from textual.reactive import reactive
 from textual.widgets import Footer, Static, Input, Label
 
-from _localization import gettext as _
+
+def _(text: str, _: dict = json.loads(Path(__file__).parent.joinpath('i18n.json').read_text(encoding='utf-8'))) -> str:
+    lang = locale.getdefaultlocale()[0]
+    if lang in _:
+        if text in _[lang]:
+            return _[lang][text]
+    return text
 
 
 def full_text_search(bib: BibDatabase, regex: re.Pattern) -> BibDatabase:
@@ -116,7 +125,7 @@ class BibtexFilter(App[str]):
     writer: BibTexWriter
 
     def __init__(self, bibtex: str):
-        super().__init__(watch_css=True)
+        super().__init__()
         self.writer = BibTexWriter()
         self.writer.indent = ' ' * 4
         self.bib = bibtexparser.loads(bibtex)
@@ -173,7 +182,7 @@ class BibtexFilter(App[str]):
     def action_page_down(self) -> None:
         self.query_one(Container).scroll_page_down(animate=False)
 
-    # @debounce(0.25)
+    @debounce(0.25)
     def on_input_changed(self, event: Input.Changed) -> None:
         self.pattern = event.value
 
@@ -187,8 +196,12 @@ class BibtexFilter(App[str]):
         yield CustomFooter()
 
 
-if __name__ == '__main__':
+def main():
     import sys
 
     with open(sys.argv[1], encoding=sys.getdefaultencoding()) as f:
         print(BibtexFilter(f.read()).run())
+
+
+if __name__ == '__main__':
+    main()

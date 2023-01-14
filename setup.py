@@ -22,7 +22,10 @@ setup(
 
     py_modules=[
         'bibtexfilter',
-        '_localization',
+    ],
+    include_package_data=True,
+    data_files=[
+        ('.', ['i18n.json'])
     ],
     install_requires=[
         'textual',
