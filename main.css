@@ -1,0 +1,27 @@
+.error {
+    background: $error-darken-1;
+}
+
+.error > .footer--highlight {
+    background: $error-darken-2;
+}
+
+.error > .footer--key {
+    background: $error-darken-3;
+}
+
+SearchBar {
+    height: 1;
+    layout: grid;
+    grid-size: 3;
+    grid-columns: 3 1fr 2;
+}
+
+Input {
+    padding: 0;
+    border: none;
+}
+
+Label {
+    background: $boost;
+}
