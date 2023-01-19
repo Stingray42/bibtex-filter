@@ -8,6 +8,6 @@
 
 - [x] single module
 - [x] gh actions build
-- [ ] text highlights
+- [x] text highlights
 - [ ] multiple filters (in ui, with hotkeys too)
 - [ ] syntax highlighting and theme

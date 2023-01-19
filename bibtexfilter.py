@@ -36,12 +36,16 @@ def full_text_search(bib: BibDatabase, regex: re.Pattern) -> BibDatabase:
 
 class BibtexContent(Static):
     content = reactive(str)
+    regex: re.Pattern = reactive(None)
 
     def watch_content(self, content: str) -> None:
         self.refresh(repaint=False, layout=True)
 
     def render(self) -> RenderableType:
-        return self.content
+        text = Text(self.content)
+        if self.regex:
+            text.highlight_regex(self.regex, style='bold #000000 on #ffa62b')
+        return text
 
 
 class Indicator(Label):
@@ -158,6 +162,7 @@ class BibtexFilter(App[str]):
 
     def watch_result(self, result: BibDatabase) -> None:
         self.query_one(BibtexContent).content = bibtexparser.dumps(result, self.writer)
+        self.query_one(BibtexContent).regex = self.regex
 
     def watch_dark(self, dark: bool) -> None:
         self.query_one(BibtexContent).dark = dark
