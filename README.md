@@ -9,5 +9,6 @@
 - [x] single module
 - [x] gh actions build
 - [x] text highlights
+- [x] work as lib returning bibtex db object
 - [ ] multiple filters (in ui, with hotkeys too)
 - [ ] syntax highlighting and theme

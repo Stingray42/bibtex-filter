@@ -112,7 +112,7 @@ def debounce(timeout: float):
     return decorator
 
 
-class BibtexFilter(App[str]):
+class BibtexFilter(App[BibDatabase]):
     CSS_PATH = 'main.css'
     BINDINGS = [
         ('escape', 'quit', _('Close')),
@@ -128,11 +128,11 @@ class BibtexFilter(App[str]):
     bib: BibDatabase
     writer: BibTexWriter
 
-    def __init__(self, bibtex: str):
+    def __init__(self, bib: BibDatabase):
         super().__init__()
         self.writer = BibTexWriter()
         self.writer.indent = ' ' * 4
-        self.bib = bibtexparser.loads(bibtex)
+        self.bib = bib
 
     def on_mount(self) -> None:
         self.result = self.bib
@@ -192,8 +192,7 @@ class BibtexFilter(App[str]):
         self.pattern = event.value
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
-        result = bibtexparser.dumps(self.result, self.writer)
-        self.exit(result)
+        self.exit(self.result)
 
     def compose(self) -> ComposeResult:
         yield Container(BibtexContent())
@@ -205,7 +204,10 @@ def main():
     import sys
 
     with open(sys.argv[1], encoding=sys.getdefaultencoding()) as f:
-        print(BibtexFilter(f.read()).run())
+        bib_database = bibtexparser.load(f)
+        app = BibtexFilter(bib_database)
+        result = app.run()
+        print(bibtexparser.dumps(result, app.writer))
 
 
 if __name__ == '__main__':
